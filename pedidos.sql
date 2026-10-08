@@ -39,3 +39,77 @@ CREATE TABLE item_pedido (
 	CONSTRAINT fk_item_produto FOREIGN KEY (id_produto)
 		REFERENCES produto (id_produto)
 );
+
+
+INSERT INTO categoria (nome)
+VALUES
+('Eletrônicos'),
+('Informática'),
+('Acessórios');
+
+SELECT * FROM categoria;
+
+INSERT INTO cliente(nome, email, telefone)
+VALUES
+('Aline', 'aline@email.com', '(11)11111-1111'),
+('Adecídio', 'adecidio@email.com', '(22)22222-2222'),
+('Raylan', 'raylan@email.com', '(33)33333-3333');
+
+SELECT * FROM cliente;
+
+INSERT INTO produto (nome, preco, estoque, id_categoria)
+VALUES
+('Notebook', 3500.00, 10, 2),
+('Mouse sem fio', 120.00, 30, 3),
+('Teclado mecânico', 280.00, 15, 3),
+('Monitor 24"', 900.00, 8, 2),
+('Fone Bluetooth', 250.50, 20, 1);
+
+SELECT * FROM produto;
+
+INSERT INTO pedido (data_pedido, status, id_cliente)
+VALUES
+('2026-10-08', 'Pendente', 1),
+('2026-10-02', 'Pago', 2),
+('2026-10-07', 'Enviado', 1);
+
+SELECT * FROM pedido;
+
+INSERT INTO item_pedido (id_pedido, id_produto, quantidade)
+VALUES
+(1, 2, 1),
+(1, 3, 2),
+(2, 4, 1),
+(2, 5, 1),
+(2, 6, 2);
+
+SELECT * FROM item_pedido;
+
+SELECT * FROM cliente;
+
+SELECT id_cliente, nome, email
+FROM cliente;
+
+SELECT id_produto, nome, preco
+FROM produto
+WHERE preco > 500;
+
+SELECT nome, preco
+FROM produto
+ORDER BY preco DESC;
+
+SELECT * FROM produto;
+
+UPDATE produto
+SET preco = 3400.00
+WHERE id_produto = 2;
+
+SELECT * FROM pedido;
+
+UPDATE pedido
+SET status = 'Pago'
+WHERE id_pedido = 1;
+
+UPDATE produto
+SET estoque = estoque + 10
+WHERE id_produto = 5;
