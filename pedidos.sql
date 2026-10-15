@@ -113,3 +113,66 @@ WHERE id_pedido = 1;
 UPDATE produto
 SET estoque = estoque + 10
 WHERE id_produto = 5;
+
+SELECT id_pedido, data_pedido FROM pedido;
+
+SELECT * FROM pedido
+WHERE status = 'Pago';
+
+SELECT * FROM cliente
+WHERE nome ILIKE '%a%';
+
+SELECT * FROM produto;
+SELECT * FROM categoria;
+
+SELECT
+	p.id_produto,
+	p.nome AS produto,
+	p.preco,
+	c.nome AS categoria
+FROM produto AS p
+INNER JOIN categoria AS c
+	ON c.id_categoria = p.id_categoria;
+
+
+SELECT
+	p.id_pedido,
+	p.data_pedido,
+	p.status,
+	c.nome AS cliente,
+	c.email
+FROM pedido AS p
+INNER JOIN cliente AS c
+	ON c.id_cliente = p.id_cliente;
+
+
+SELECT
+	pe.id_pedido,
+	pe.data_pedido,
+	c.nome AS cliente,
+	p.nome AS produto,
+	ip.quantidade,
+	p.preco,
+	(p.preco * ip.quantidade) AS subtotal
+FROM item_pedido AS ip
+INNER JOIN pedido AS pe
+	ON pe.id_pedido = ip.id_pedido
+INNER JOIN cliente AS c
+	ON c.id_cliente = pe.id_cliente
+INNER JOIN produto AS p
+	ON p.id_produto = ip.id_produto;
+
+
+SELECT
+	c.id_cliente,
+	c.nome AS cliente,
+	pe.id_pedido,
+	pe.data_pedido,
+	pe.status
+FROM cliente AS C
+LEFT JOIN pedido AS pe
+	ON pe.id_cliente = c.id_cliente
+ORDER BY c.nome DESC;
+
+-- Cliente é a tabela da esquerda
+-- Pedido é a tabela da direita
