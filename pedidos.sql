@@ -173,6 +173,62 @@ FROM cliente AS C
 LEFT JOIN pedido AS pe
 	ON pe.id_cliente = c.id_cliente
 ORDER BY c.nome DESC;
-
 -- Cliente é a tabela da esquerda
 -- Pedido é a tabela da direita
+
+-- clientes que ainda não fizeram nenhum pedido
+SELECT
+	c.id_cliente,
+	c.nome
+FROM cliente AS c
+LEFT JOIN pedido AS pe
+	ON pe.id_cliente = c.id_cliente
+WHERE pe.id_pedido IS NULL;
+
+
+SELECT
+	c.nome AS categoria,
+	p.nome AS produto
+FROM produto AS p
+RIGHT JOIN categoria AS c
+	ON c.id_categoria = p.id_categoria
+ORDER BY c.nome, p.nome;
+
+
+UPDATE produto
+SET preco = 130.00
+WHERE id_produto = 3;
+
+UPDATE produto
+SET estoque = estoque + 5
+WHERE id_produto = 2;
+
+UPDATE pedido
+SET status = 'Enviado'
+WHERE id_pedido = 1;
+
+DELETE FROM pedido
+WHERE id_pedido = 1;
+
+
+-- quantidade de pedidos por cliente
+SELECT
+	c.id_cliente,
+	c.nome AS cliente,
+	COUNT(pe.id_pedido) AS quantidade_pedidos -- função de agregação COUNT
+FROM cliente AS c
+LEFT JOIN pedido AS pe
+	ON pe.id_cliente = c.id_cliente
+GROUP BY c.id_cliente, c.nome
+ORDER BY quantidade_pedidos DESC;
+
+-- calcula o total de unidades vendidas pro produto
+SELECT
+	p.id_produto,
+	p.nome AS produto,
+	SUM(ip.quantidade) AS unidades_vendidas -- função de agregação SUM
+FROM produto AS p
+INNER JOIN item_pedido AS ip
+	ON ip.id_produto = p.id_produto
+GROUP BY p.id_produto, p.nome
+ORDER BY unidades_vendidas DESC;
