@@ -232,3 +232,68 @@ INNER JOIN item_pedido AS ip
 	ON ip.id_produto = p.id_produto
 GROUP BY p.id_produto, p.nome
 ORDER BY unidades_vendidas DESC;
+
+
+-- Funções
+
+-- PL/pgSQL (Procedural Language / PostgreSQL)
+
+CREATE OR REPLACE FUNCTION fn_somar(nro1 INTEGER, nro2 INTEGER)
+RETURNS INTEGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	RETURN nro1 + nro2;
+END;
+$$;
+
+SELECT fn_somar(10, 5);
+
+
+CREATE OR REPLACE FUNCTION fn_calcular_desconto(
+	preco NUMERIC(10, 2),
+	percentual NUMERIC (5, 2)
+)
+RETURNS NUMERIC(10, 2)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	RETURN preco - (preco * percentual / 100);
+END;
+$$;
+
+-- Calcular o preço do produto de ID 2 com 10% de desconto
+SELECT
+	id_produto,
+	nome,
+	preco AS preco_original,
+	fn_calcular_desconto(preco, 10) AS preco_com_desconto
+FROM produto
+WHERE id_produto = 2;
+
+
+ALTER TABLE produto
+ADD COLUMN data_modificacao TIMESTAMP;
+
+CREATE OR REPLACE FUNCTION fn_atualizar_data_modificacao()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	NEW.data_modificacao := CURRENT_TIMESTAMP;
+
+	RETURN NEW;
+END;
+$$;
+
+-- Criação de trigger
+CREATE TRIGGER trg_atualizar_data_modificacao
+BEFORE UPDATE ON produto
+FOR EACH ROW
+EXECUTE FUNCTION fn_atualizar_data_modificacao();
+
+UPDATE produto
+SET preco = 140.00
+WHERE id_produto = 3;
+
+SELECT * FROM produto;
