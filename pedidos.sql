@@ -297,3 +297,51 @@ SET preco = 140.00
 WHERE id_produto = 3;
 
 SELECT * FROM produto;
+
+
+CREATE OR REPLACE FUNCTION fn_atualizar_estoque()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	UPDATE produto
+	SET estoque = estoque - NEW.quantidade
+	WHERE id_produto = NEW.id_produto;
+
+	RETURN NEW;
+END;
+$$
+
+
+-- Criação da trigger
+CREATE TRIGGER trg_atualizar_estoque
+AFTER INSERT ON item_pedido
+FOR EACH ROW
+EXECUTE FUNCTION fn_atualizar_estoque();
+
+
+-- Inserção na tabela item_pedido dispara a trigger
+
+INSERT INTO item_pedido (id_pedido, id_produto, quantidade)
+VALUES (1, 2, 2);
+
+SELECT * FROM item_pedido;
+
+SELECT * FROM produto;
+
+
+-- View (visão)
+CREATE OR REPLACE VIEW vw_produtos AS
+SELECT
+	p.id_produto,
+	p.nome AS produto,
+	p.preco,
+	c.nome AS categoria
+FROM produto AS p
+INNER JOIN categoria AS c
+	ON p.id_categoria = c.id_categoria;
+
+
+SELECT * FROM vw_produtos;
+
+SELECT produto, categoria FROM vw_produtos;
